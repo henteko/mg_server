@@ -4,12 +4,13 @@ require 'sinatra/json'
 require 'aws-sdk'
 require 'digest/md5'
 require 'RMagick'
+require 'tmpdir'
 
 # @param [String] mp4_file_path
 # @return [String]
-def gif_from_mp4(mp4_file_path)
+def gif_from_mp4(mp4_file_path, output_dir_path)
   hash = Digest::MD5.file(mp4_file_path).to_s
-  output_path = "./tmp/#{hash}.gif"
+  output_path = File.join(output_dir_path, "#{hash}.gif")
   `ffmpeg -y -i #{mp4_file_path}  -an -r 15  -pix_fmt rgb24 -f gif #{output_path}`
 
   output_path
@@ -24,14 +25,16 @@ s3 = Aws::S3::Client.new(region: 'ap-northeast-1')
 
 namespace '/api' do
   post '/convert' do
-    path = gif_from_mp4(params[:file][:tempfile].path) # TODO: check params
-    file_name = File.basename(path)
-    s3.put_object(
-        bucket: BACKET_NAME,
-        body: File.open(path),
-        key: file_name
-    )
-    json gif: "#{base_url}/#{file_name}"
+    Dir.mktmpdir do |dir|
+      path = gif_from_mp4(params[:file][:tempfile].path, dir.to_s) # TODO: check params
+      file_name = File.basename(path)
+      s3.put_object(
+          bucket: BACKET_NAME,
+          body: File.open(path),
+          key: file_name
+      )
+      json gif: "#{base_url}/#{file_name}"
+    end
   end
 end
 
