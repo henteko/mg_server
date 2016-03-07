@@ -56,6 +56,10 @@ class MgApp < Sinatra::Base
       img.to_blob
     end
   end
+
+  get '/' do
+    "curl -F 'file=@input.mp4' #{base_url}/api/convert"
+  end
 end
 
 run MgApp
