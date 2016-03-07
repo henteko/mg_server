@@ -11,7 +11,6 @@ class MgApp < Sinatra::Base
   register Sinatra::Namespace
 
   BACKET_NAME = 'mg.henteko07.com'
-  S3 = Aws::S3::Client.new(region: 'ap-northeast-1')
 
   # @param [String] mp4_file_path
   # @return [String]
@@ -29,6 +28,7 @@ class MgApp < Sinatra::Base
 
   namespace '/api' do
     post '/convert' do
+      s3 = Aws::S3::Client.new(region: 'ap-northeast-1')
       Dir.mktmpdir do |dir|
         path = gif_from_mp4(params[:file][:tempfile].path, dir.to_s) # TODO: check params
         file_name = File.basename(path)
@@ -44,8 +44,9 @@ class MgApp < Sinatra::Base
 
   get '/:file_name' do
     file_name = params[:file_name]
+    s3 = Aws::S3::Client.new(region: 'ap-northeast-1')
     Tempfile.create(file_name) do |f|
-      resp = S3.get_object(
+      resp = s3.get_object(
           response_target: f.path,
           bucket: BACKET_NAME,
           key: file_name
