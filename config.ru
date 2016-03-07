@@ -17,7 +17,7 @@ class MgApp < Sinatra::Base
   def gif_from_mp4(mp4_file_path, output_dir_path)
     hash = Digest::MD5.file(mp4_file_path).to_s
     output_path = File.join(output_dir_path, "#{hash}.gif")
-    `ffmpeg -y -i #{mp4_file_path}  -an -r 15  -pix_fmt rgb24 -f gif #{output_path}`
+    `ffmpeg -y -i #{mp4_file_path} -an -r 10 -pix_fmt rgb24 -f gif #{output_path}`
 
     output_path
   end
