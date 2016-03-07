@@ -3,7 +3,7 @@ require 'sinatra/namespace'
 require 'sinatra/json'
 require 'aws-sdk'
 require 'digest/md5'
-require 'RMagick'
+require 'rmagick'
 require 'tmpdir'
 
 require 'sinatra/base'
