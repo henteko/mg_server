@@ -1,3 +1,6 @@
 .DS_Store
 .idea/
-tmp/
+
+unicorn.stderr.log
+unicorn.stdout.log
+unicorn.pid
