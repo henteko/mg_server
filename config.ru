@@ -32,7 +32,7 @@ class MgApp < Sinatra::Base
       Dir.mktmpdir do |dir|
         path = gif_from_mp4(params[:file][:tempfile].path, dir.to_s) # TODO: check params
         file_name = File.basename(path)
-        S3.put_object(
+        s3.put_object(
             bucket: BACKET_NAME,
             body: File.open(path),
             key: file_name

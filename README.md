@@ -1,6 +1,6 @@
 # Setup
 
-Please install ImageMagick and ffmpeg
+Please install ImageMagick and ffmpeg(2.6)
 
 # Run
 
